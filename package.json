@@ -1,0 +1,22 @@
+{
+  "name": "mosaic-client",
+  "description": "a client for managing components",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "tar": "0.1.x",
+    "semver": "1.1.x",
+    "commander": "1.1.x",
+    "win-fork": "1.0.0",
+    "fstream": "0.1.x",
+    "fstream-npm": "0.1.x",
+    "request": "2.16.x",
+    "fs.extra": "1.2.x"
+  },
+  "devDependencies": {
+    "mocha": "1.8.x"
+  }
+}

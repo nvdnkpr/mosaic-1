@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+"use strict";
+
+var program = require('commander')
+var request = require('request')
+var semver = require('semver')
+var fs = require('fs.extra')
+var zlib = require('zlib')
+var tar = require('tar')
+
+
+program.parse(process.argv)
+
+
+var MOPATH_PATTERN = /([^\/]+)\/([^\/]+)\/((?:\d+\.){2}\d+(?:-[^\/]+)?)$/
+
+var mopath = program.args[0]
+var parts = mopath.match(MOPATH_PATTERN)
+var ns = parts[1]
+var name = parts[2]
+var version = parts[3]
+
+
+if (fs.existsSync(mopath)) {
+  console.log('mosaic exists!')
+}
+else if (ns && name && version && semver.valid(version)) {
+  fs.mkdirp(mopath)
+  request.get('http://127.0.0.1:6000/api/' + mopath)
+    .pipe(zlib.Gunzip())
+    .pipe(tar.Extract({ path: mopath, strip: 1 }))
+}
