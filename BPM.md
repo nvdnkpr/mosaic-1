@@ -166,15 +166,14 @@ bpm config user.name     # ==> yicai.cyj
 
 ```
 new-component
-└── 0.1.0
-    ├── data.json      # 示例数据
-    ├── index.js       # JavaScript 入口
-    ├── index.scss     # CSS 入口
-    ├── package.json   # 组件描述
-    └── template.html  # 组件模板
+├── data.json      # 示例数据
+├── index.js       # JavaScript 入口
+├── index.scss     # CSS 入口
+├── package.json   # 组件描述
+└── template.html  # 组件模板
 ```
 
-初始版本号为 0.1.0，其下有 JavaScript、CSS 的入口文件，有该组件的描述，有模板文件和示例数据文件。
+其下有 JavaScript、CSS 的入口文件，有该组件的描述，有模板文件和示例数据文件。
 
 在这些文件中，如下文件需要提供一份用于初始化的模板：
 
@@ -204,7 +203,7 @@ index.scss 的模板类似：
 }
 ```
 
-package.json 则要复杂一些，容后讨论。
+package.json 则要复杂一些，容后讨论。初始版本号为 0.1.0 。
 
 #### 用户验证
 
