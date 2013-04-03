@@ -129,7 +129,7 @@ app.get('/:namespace/:component/:version')
 ~/.bpm
 ├── cache     # 目录，存放缓存的 package.tgz 压缩包
 ├── cookie    # 用户的 cookie jar，存放用户在服务端的会话 ID 或者验证信息
-└── rc.ini    # ini 文件，存放用户配置，详情见下文
+└── config    # ini 文件，存放用户配置，详情见下文
 ```
 
 针对这两项功能，bpm 客户端需要提供两个主要命令：
@@ -258,8 +258,25 @@ JavaScript 文件。显式指定组件的 JS 文件，有益于后续优化。
 #### 技术实现
 
 我自然是希望可以用 mosaic-client 这个示例采用的架构的，子命令通过 `mosaic` 主命令分发，
-复杂命令封装到 `./lib` 下的对应模块，等等。这是模仿 component 写的，spm 也采用了这种设计。
+复杂命令例如 `mosaic-install`，在 `./bin/mosaic-install` 中预处理，在
+`./lib/mosaic/install.js` 中实现逻辑代码。这是模仿 component 写的，spm 也采用了这种设计。
+
+与 OPM 目前采用方式的差别是，当用户执行 `mosaic install` 这种命令时，只会加载此命令相关的模块，
+而 OPM 会加载所有的模块。
 
 组件目录初始化，我建议采用模板文件的形式，将那几个文件初始化出来。
 
 义宇来估工时吧，希望你能同意我前边对客户端实现方式的设想。
+
+#### 4月3日与义宇沟通后的补充
+
+改个名字，不叫 `package.json`，我同意，顺便提议叫 `brick.json`，一块板砖。
+
+自定义的属性放到另外的 JSON 文件里头去，我觉得没有比较，放到一个属性前缀（例如 bpm）里头，
+我也觉得没必要。
+
+index.scss 只是个人观点，Brix Style 和 Brix Gallery 中目前采用的都是 Less，
+但我希望可以换成 SCSS，正与基老师探讨可行性，两者优劣，也会在彼项目中说明。
+
+`rc.ini` 文件名，我改成了 config，这样更清楚一些，没接触过 Linux 或者 Mac 系统的同学，对 rc
+这个名字可能不太了解。
