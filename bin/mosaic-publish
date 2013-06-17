@@ -11,23 +11,19 @@ var zlib = require('zlib')
 var fstream = require('fstream')
 var Packer = require('fstream-npm')
 var request = require('request')
-<<<<<<< HEAD
 var fields = require('../lib/config').PACKAGE_FIELDS
 var serverurl = require('../lib/config').SERVER_URL
 var rl = require('../lib/rl')
 
 
 //var MOPATH_PATTERN = /([^\/]+)\/([^\/]+)\/((?:\d+\.){2}\d+(?:-[^\/]+)?)$/
-=======
 
 
 var MOPATH_PATTERN = /([^\/]+)\/([^\/]+)\/((?:\d+\.){2}\d+(?:-[^\/]+)?)$/
->>>>>>> 03181dfb4cd3ab65d7c44e0f8b6d4c61df472bf1
 
 
 program.parse(process.argv)
 
-<<<<<<< HEAD
 var args = program.args
 var curDir = process.cwd()
 var config
@@ -164,63 +160,5 @@ function hasOwn(props){
           return false 
     })
     return true
-=======
-
-var fpath = path.join(process.cwd(), program.args[0] || '.')
-var mopath = ''
-
-
-function afterTar(err) {
-  var r = request.post('http://127.0.0.1:6000/api/' + mopath, function(err, res, body) {
-    if (err) {
-      console.log(err)
-    }
-    else {
-      console.log(body)
-      // var data = JSON.parse(body)
-
-      // console.log(data.success || data.error)
-    }
-  })
-
-  // To post multpart/form-dat with request, one must use this form of
-  // specifying request data. Calling it like this:
-  //
-  //    request.post(url, {
-  //      form: { tarball: ... }
-  //    })
-  //
-  // will not work.
-  // https://github.com/mikeal/request#forms
-  r.form().append('tarball', fs.createReadStream('package.tgz'))
 }
 
-
-if (fs.existsSync(fpath)) {
-  var parts = fpath.match(MOPATH_PATTERN)
-  var ns = parts[1]
-  var name = parts[2]
-  var ver = parts[3]
-
-  mopath = parts[0]
-
-  var spec = require(path.join(fpath, 'package.json'))
-
-  if (spec.name !== name) {
-    console.log('mosaic name not match', name, spec.name)
-  }
-  else if (spec.version !== ver) {
-    console.log('mosaic version not match', ver, spec.version)
-  }
-  else if (!semver.valid(ver)) {
-    console.log(ver, 'not valid according to http://semver.org')
-  }
-  else {
-    new Packer({ path: fpath, type: 'Directory', isDirectory: true })
-      .pipe(tar.Pack())
-      .pipe(zlib.Gzip())
-      .pipe(fstream.Writer('package.tgz'))
-      .on('close', afterTar)
-  }
->>>>>>> 03181dfb4cd3ab65d7c44e0f8b6d4c61df472bf1
-}

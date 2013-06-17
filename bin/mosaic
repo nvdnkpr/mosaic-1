@@ -24,10 +24,6 @@ if (fs.existsSync(local)) bin = local
 
 var proc = spawn(bin, args, { stdio: 'inherit', customFds: [0, 1, 2] })
 
-<<<<<<< HEAD
-proc.on('close', function(code){	
-=======
 proc.on('close', function(code){
->>>>>>> 03181dfb4cd3ab65d7c44e0f8b6d4c61df472bf1
   process.exit(code)
 })
