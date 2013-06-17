@@ -1,0 +1,55 @@
+#!/usr/bin/env node
+
+"use strict";
+
+var program = require('commander')
+var request = require('request')
+var semver = require('semver')
+var fs = require('fs.extra')
+var zlib = require('zlib')
+var tar = require('tar')
+var rl = require('../lib/rl')
+var serverurl = require('../lib/config').SERVER_URL
+
+
+program.parse(process.argv)
+
+
+var MOPATH_PATTERN = /([^\/]+)\/([^\/]+)\/((?:\d+\.){2}\d+(?:-[^\/]+)?)$/
+
+var mopath = program.args[0]
+var parts = mopath.match(MOPATH_PATTERN)
+var ns = parts[1]
+var name = parts[2]
+var version = parts[3]
+
+if (fs.existsSync(mopath)) {
+  	rl.question("Files already exist in current path, reinstall and overwrite?(y\/n): ", function(answer) {
+  		answer = answer.toLowerCase().trim()
+  		if(answer === 'n'){
+  			  process.exit(0)
+  		}
+  		else if(answer === 'y'){
+  			  install(mopath, 'Files reinstalled successfully!')
+  		}
+  		else{
+  			  this.redo()
+  		}
+	});
+}
+else if (ns && name && version && semver.valid(version)) {
+  	install(mopath, 'Files installed successfully!')
+}
+
+function install(path,msg){
+	  fs.mkdirp(path)
+  	request.get(serverurl + path)
+    	.pipe(zlib.Gunzip())
+    	.pipe(tar.Extract({ path: path, strip: 1 }))
+
+    if(msg){
+        console.log(msg)
+    }
+}
+
+

@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+"use strict";
+
+var fs = require('fs')
+var path = require('path')
+var program = require('commander')
+var spawn = require('win-fork')
+
+
+program.parse(process.argv)
+
+
+var args = process.argv.slice(3)
+var cmd = program.args[0]
+
+
+var bin = 'mosaic-' + cmd
+var local = path.join(__dirname, bin)
+
+
+if (fs.existsSync(local)) bin = local
+
+
+var proc = spawn(bin, args, { stdio: 'inherit', customFds: [0, 1, 2] })
+
+proc.on('close', function(code){	
+  process.exit(code)
+})

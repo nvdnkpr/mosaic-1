@@ -1,0 +1,160 @@
+#!/usr/bin/env node
+
+"use strict";
+
+var semver = require('semver')
+var program = require('commander')
+var path = require('path')
+var fs = require('fs')
+var tar = require('tar')
+var zlib = require('zlib')
+var fstream = require('fstream')
+var Packer = require('fstream-npm')
+var request = require('request')
+var fields = require('../lib/config').PACKAGE_FIELDS
+var serverurl = require('../lib/config').SERVER_URL
+var rl = require('../lib/rl')
+
+
+//var MOPATH_PATTERN = /([^\/]+)\/([^\/]+)\/((?:\d+\.){2}\d+(?:-[^\/]+)?)$/
+
+
+program.parse(process.argv)
+
+var args = program.args
+var curDir = process.cwd()
+var config
+var fpath
+
+if(args.length === 0){
+    //如果当前目录存在合法的package.json，则将本目录发布
+    if(fs.existsSync('package.json')){
+        config = require(path.join(curDir, 'package.json'))
+        if(isValidConfig(config)){
+            publish(curDir, afterTar)
+        }
+        else{
+            console.log('Invalid package.json!')
+        }
+    }
+    else{
+        console.log('Cannot find package.json!')
+    }
+}
+else{
+    fpath = path.normalize(path.join(curDir, args[0]))
+    console.log('fpath = ' + fpath)
+
+    config = require(path.join(fpath, 'package.json'))
+
+    var componame = path.basename(fpath)
+    console.log('componame = ' + componame)
+
+    if(!isValidConfig(config, {name: componame})){
+        return
+    }
+
+    if (fs.existsSync(fpath)) {
+        publish(fpath,afterTar)
+    }
+
+}
+
+
+
+function publish(path,callback){
+  new Packer({ path: path, type: 'Directory', isDirectory: true })
+      .pipe(tar.Pack())
+      .pipe(zlib.Gzip())
+      .pipe(fstream.Writer('package.tgz'))
+      .on('close', callback)
+}
+
+function afterTar(err) {
+  var nameparts = config.name.split(/\//)
+  var ns = nameparts[0]
+  var name = nameparts[1]
+  var url = [serverurl, ns , '\/', name, '\/', config.version ].join('')
+  
+  //console.log('Request URL: ' + url)
+  post()
+
+  function post(overwrite){
+      var r = request.post( url, callback)
+      var form = r.form()
+      if(overwrite){
+          form.append('overwrite', 'y')
+      }
+      form.append('tarball', fs.createReadStream('package.tgz'))
+  }
+  function callback(err, res, body) {
+      if (err) {
+          console.log(err)
+      }
+      else {
+          var statusCode = res.statusCode
+          if(statusCode === 205){
+              rl.question('Files already exist on server,overwrite?(y\/n): ',function(answer){
+                  answer = answer.toLowerCase().trim()
+                  
+                  if(answer === 'y'){
+                      post('y')
+                  }
+                  else if(answer === 'n'){
+                      process.exit(0)
+                  }
+                  else{
+                      this.redo()
+                  }
+              })
+          }
+          else{
+              var data = JSON.parse(body)
+              console.log(statusCode + ': ' + data.success || data.error)
+          }
+      }
+  }  
+}
+
+function isValidConfig(config, options){
+    var name = config.name, ver = config.version
+    if(typeof config === 'object'){
+        if(!hasOwn.call(config, fields)){
+            console.log('Not enough fields in package.json!')
+            return false
+        }
+        else{
+            if(!name){
+                console.log('Invalid field in package.json: [name]!')
+                return false
+            }
+            if(!semver.valid(ver)){
+                console.log('Invalid field in package.json: [version]!')
+                return false
+            }
+        }
+    }
+    else
+        return false
+
+    if(options){
+        var index = name.indexOf('\/')
+        if(index != -1 && index < name.length - 1)
+            name = name.slice(index + 1)
+          
+        if(name !== options.name){
+            console.log('Component name does not match!')
+            return false
+        }
+    }
+    return true
+}
+
+function hasOwn(props){
+    var self = this
+    props.forEach(function(p){
+        if(!self.hasOwnProperty(p))
+          return false 
+    })
+    return true
+}
