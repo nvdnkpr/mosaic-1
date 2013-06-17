@@ -8,8 +8,11 @@ var semver = require('semver')
 var fs = require('fs.extra')
 var zlib = require('zlib')
 var tar = require('tar')
+<<<<<<< HEAD
 var rl = require('../lib/rl')
 var serverurl = require('../lib/config').SERVER_URL
+=======
+>>>>>>> 03181dfb4cd3ab65d7c44e0f8b6d4c61df472bf1
 
 
 program.parse(process.argv)
@@ -23,6 +26,7 @@ var ns = parts[1]
 var name = parts[2]
 var version = parts[3]
 
+<<<<<<< HEAD
 if (fs.existsSync(mopath)) {
   	rl.question("Files already exist in current path, reinstall and overwrite?(y\/n): ", function(answer) {
   		answer = answer.toLowerCase().trim()
@@ -53,3 +57,15 @@ function install(path,msg){
 }
 
 
+=======
+
+if (fs.existsSync(mopath)) {
+  console.log('mosaic exists!')
+}
+else if (ns && name && version && semver.valid(version)) {
+  fs.mkdirp(mopath)
+  request.get('http://127.0.0.1:6000/api/' + mopath)
+    .pipe(zlib.Gunzip())
+    .pipe(tar.Extract({ path: mopath, strip: 1 }))
+}
+>>>>>>> 03181dfb4cd3ab65d7c44e0f8b6d4c61df472bf1

@@ -1,7 +1,11 @@
 .DS_Store
 node_modules
 *.sublime-project
+<<<<<<< HEAD
 *.sublime-workspace
 *.tgz
 test/components
 test/test
+=======
+*.sublime-workspace
+>>>>>>> 03181dfb4cd3ab65d7c44e0f8b6d4c61df472bf1

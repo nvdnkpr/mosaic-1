@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 03181dfb4cd3ab65d7c44e0f8b6d4c61df472bf1
 # Mosaic Client
 
 马赛克（Mosaic）管理工具，与 Mosaic Server 配合，将业务中的各个区块以组件形式管理起来。
@@ -89,7 +92,10 @@ package.json 中使用 `files` 属性显示指明所包含的文件，类似：
 详细的规则，和两个版本号的比较，semver.org 都有，isaacs 在 Node 中实现了这一逻辑，
 并在 [node-semver](https://github.com/isaacs/node-semver) 的 README 中描述了其 API，
 和版本号比较的逻辑。
+<<<<<<< HEAD
 =======
 mosaic-client
 =============
 >>>>>>> 14535867fa3a23addf1d5475b7c990be6aeb5020
+=======
+>>>>>>> 03181dfb4cd3ab65d7c44e0f8b6d4c61df472bf1
