@@ -1,0 +1,9 @@
+{
+  "node": true,
+
+  "asi": true,
+
+  "predef": {
+    "Mocha": true
+  }
+}

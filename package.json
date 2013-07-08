@@ -1,7 +1,7 @@
 {
-  "name": "mosaic-client",
+  "name": "mosaic",
   "description": "a client for managing components",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "test": "mocha"
@@ -13,10 +13,21 @@
     "win-fork": "1.0.0",
     "fstream": "0.1.x",
     "fstream-npm": "0.1.x",
-    "request": "2.16.x",
-    "fs.extra": "1.2.x"
+    "request": "2.21.x",
+    "fs.extra": "1.2.x",
+    "debug": "~0.7.2",
+    "express": "~3.3.3",
+    "velocityjs": "~0.3.13"
   },
   "devDependencies": {
-    "mocha": "1.8.x"
+    "mocha": "1.8.x",
+    "should": "~1.2.2"
+  },
+  "bin": {
+    "mosaic": "bin/mosaic",
+    "mosaic-info": "bin/mosaic-info",
+    "mosaic-install": "bin/mosaic-install",
+    "mosaic-publish": "bin/mosaic-publish",
+    "mosaic-server": "bin/mosaic-server"
   }
 }

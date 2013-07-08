@@ -15,7 +15,16 @@ var args = process.argv.slice(3)
 var cmd = program.args[0]
 
 
-var bin = 'mosaic-' + cmd
+var aliases = {
+  serve: 'server'
+}
+
+function alias(cmd) {
+  return aliases[cmd] || cmd
+}
+
+
+var bin = 'mosaic-' + alias(cmd)
 var local = path.join(__dirname, bin)
 
 

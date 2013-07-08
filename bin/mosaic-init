@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+"use strict";
+
+var mosaic = require('../lib/mosaic')
+
+
+mosaic.log('not yet')

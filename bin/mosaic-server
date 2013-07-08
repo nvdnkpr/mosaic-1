@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+
+"use strict";
+
+var express = require('express')
+var fs = require('fs')
+var path = require('path')
+var mosaic = require('../lib/mosaic')
+
+
+var app = express()
+var cwd = process.cwd()
+
+
+app.use(express.static(cwd))
+app.use(express.logger())
+
+
+var spath = path.join(cwd, 'server.js')
+
+if (fs.existsSync(spath)) require(spath)(app)
+
+
+var port = process.argv[2]
+
+port = /^\d{4,5}$/.test(port) ? port : mosaic.get('port')
+mosaic.log('Listening on', port)
+app.listen(port).on('error', function(err) {
+  mosaic.log('Cannot start server due to', err.code)
+})
