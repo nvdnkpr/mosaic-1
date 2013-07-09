@@ -1,3 +1,27 @@
 #!/usr/bin/env node
 
 "use strict"
+
+
+var request = require('request')
+var program = require('commander')
+var mosaic = require('../lib/mosaic')
+
+
+program.parse(process.argv)
+
+
+var name = program.args[0]
+
+request(mosaic.remote(name), function(err, resp, body) {
+  if (err) return mosaic.fatal(err)
+
+  if (resp.statusCode === 200) {
+    var mo = JSON.parse(body)
+
+    for (var p in mo) mosaic.log(p, mo[p])
+  }
+  else if (resp.statusCode === 404) {
+    mosaic.log('info', body)
+  }
+})

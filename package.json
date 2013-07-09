@@ -2,7 +2,7 @@
   "name": "mosaic",
   "description": "a client for managing components",
   "version": "0.1.0",
-  "private": true,
+  "preferGlobal": true,
   "scripts": {
     "test": "mocha"
   },
@@ -17,13 +17,16 @@
     "fs.extra": "1.2.x",
     "debug": "~0.7.2",
     "express": "~3.3.3",
-    "velocityjs": "~0.3.13"
+    "velocityjs": "~0.3.13",
+    "jade": "~0.32.0",
+    "marked": "~0.2.9"
   },
   "devDependencies": {
     "mocha": "1.8.x",
     "should": "~1.2.2"
   },
   "bin": {
+    "mo": "bin/mosaic",
     "mosaic": "bin/mosaic",
     "mosaic-info": "bin/mosaic-info",
     "mosaic-install": "bin/mosaic-install",

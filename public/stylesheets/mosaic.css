@@ -1,0 +1,40 @@
+html, body {
+  background: #efefef;
+}
+
+body {
+  font: 14px/1.5 normal "Hiragino Sans GB", Tahoma, "Microsoft Yahei", Helvetica, Arial, sans-serif;
+  padding: 40px 0;
+}
+
+h1 {
+  font-size: 180%;
+  margin: 1em 0;
+}
+
+h2 {
+  font-size: 140%;
+  margin: 1em 0;
+}
+
+h3 {
+  font-size: 120%;
+  margin: 1em 0;
+}
+
+
+.page {
+  width: 990px;
+  margin: 0 auto;
+}
+
+.demo {
+  border-radius: 2px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background: #fff;
+}
+
+.demo h2 {
+  margin-top: 0;
+}

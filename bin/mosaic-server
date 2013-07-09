@@ -6,20 +6,67 @@ var express = require('express')
 var fs = require('fs')
 var path = require('path')
 var mosaic = require('../lib/mosaic')
+var marked = require('marked')
 
 
 var app = express()
 var cwd = process.cwd()
 
 
+app.set('views', path.resolve(__dirname, '../views'))
+app.set('view engine', 'jade')
+
 app.use(express.static(cwd))
 app.use(express.logger())
-
+app.use(express.favicon())
+app.use(express.logger('dev'))
+app.use(app.router)
 
 var spath = path.join(cwd, 'server.js')
 
 if (fs.existsSync(spath)) require(spath)(app)
 
+
+app.get('/', function(req, res) {
+  res.render('index', { title: 'Mosaics' })
+})
+
+app.get('/:style.css', function(req, res) {
+  res.sendfile(path.resolve(__dirname, '../public/stylesheets/' + req.params.style + '.css'))
+})
+
+app.get('/:name', function(req, res) {
+  var name = req.params.name
+  var dpath = path.join(process.cwd(), name)
+  var fpath = path.join(dpath, 'README.md')
+
+  if (!(fs.existsSync(dpath) && fs.existsSync(fpath))) {
+    res.send(404, 'Mosaic folder not created!')
+  }
+  else {
+    var readme = fs.readFileSync(fpath, 'utf-8')
+    var lines = readme.split(/\r?\n/)
+    var open = false
+    var result = []
+    var startPtn = /^## ?(?:Usage|Demo|用法)/
+    var closePtn = /^##[^#]/
+    var codePtn = /^```/
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i]
+
+      if (open && closePtn.test(line)) break
+      if (open && !codePtn.test(line)) result.push(line)
+      if (!open && startPtn.test(line)) open = true
+    }
+
+    res.render('mosaic', {
+      fullname: 'mosaics/' + name,
+      readme: marked(readme),
+      demo: marked(result.join('\n'))
+    })
+  }
+})
 
 var port = process.argv[2]
 
