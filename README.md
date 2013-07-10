@@ -58,11 +58,11 @@ mo publish mux.tanx/dropdown
 发布后，将可在 <http://brix.alibaba-inc.com> 看到所有发布的组件，自然也包括你刚发布的这个。
 同时也可以在那找到你的组件在 CDN 的地址，通常为：
 
-<http://g.tbcdn.cn/mo/bricks/:namespace/:name/:version/:file>
+    http://g.tbcdn.cn/mo/bricks/:namespace/:name/:version/:file
 
 如果是 Brix 核心组件，则命名空间为 mosaics ，路径为：
 
-<http://g.tbcdn.cn/mo/mosaics/:name/:version/:file>
+    http://g.tbcdn.cn/mo/mosaics/:name/:version/:file
 
 如何在自己项目中使用这些外部组件（核心组件、或者其他业务组件），请看 <http://thx.github.io/brix>。
 
