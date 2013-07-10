@@ -5,25 +5,30 @@ html(lang="en")
     title= fullname
     link(rel="stylesheet", type="text/css", href="http://a.tbcdn.cn/apps/e/brix/2.0/brix-min.css")
     link(rel="stylesheet", type="text/css", href="/mosaic.css")
-    if democss
-      link(rel="stylesheet", type="text/css", href="/#{name}/demo.css")
-
+    link(rel="stylesheet", type="text/css", href="/solarized_light.css")
+    if css
+      link(rel="stylesheet", type="text/css", href="/#{name}/index.css")
     script(src="http://a.tbcdn.cn/s/kissy/1.3.0/seed-min.js")
     script(src="http://g.tbcdn.cn/thx/brix-core/3.0.0/brix-min.js")
+    script(src="/highlight.js")
     script(src="/package.js")
   body
     article(class="page")
-      section
-        h1 mosaics/wangwang
-        div(class="demo")
-          h2 Demo
-          div(bx-app) !{demo}
-      section(class="manual") !{readme}
+      if inc
+        section
+          h1 mosaics/wangwang
+          div(bx-app) !{inc}
+      else
+        section
+          h1 mosaics/wangwang
+          div(class="demo")
+            h2 Demo
+            div(bx-app) !{demo}
 
-    if demojs
-      script(src="/#{name}/demo.js")
-    else
-      script.
-        KISSY.use('brix/app', function(S, app) {
-          app.boot()
-        })
+        section(class="manual") !{readme}
+
+        script.
+          KISSY.use('brix/app', function(S, app) {
+            app.boot()
+          })
+          hljs.initHighlightingOnLoad();

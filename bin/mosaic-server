@@ -100,9 +100,24 @@ app.get('/:name', function(req, res) {
       fullname: 'mosaics/' + name,
       readme: marked(readme),
       demo: marked(result.join('\n')),
-      demojs: fs.existsSync(path.join(dpath, 'demo.js')),
-      democss: fs.existsSync(path.join(dpath, 'demo.css'))
+      css: fs.existsSync(path.join(dpath, 'index.css'))
     })
+  }
+})
+
+app.get('/:name/demo/:demo', function(req, res) {
+  var name = req.params.name
+  var demo = req.params.demo
+  var dpath = path.join(process.cwd(), name)
+  var fpath = path.join(dpath, 'demo', demo + '.inc')
+
+  if (fs.existsSync(fpath)) {
+    res.render('mosaic', {
+      inc: fs.readFileSync(fpath, 'utf-8')
+    })
+  }
+  else {
+    res.send(404, 'Mosaic demo not found!')
   }
 })
 

@@ -1,5 +1,5 @@
 html, body {
-  background: #efefef;
+  background: #f2f3f4;
 }
 
 body {
@@ -37,4 +37,13 @@ h3 {
 
 .demo h2 {
   margin-top: 0;
+}
+
+.page pre {
+  border: 1px solid #ddd;
+  border-radius: 2px;
+}
+
+.page pre code {
+  box-shadow: inset 0 0 5px #ddd;
 }
