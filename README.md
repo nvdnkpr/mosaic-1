@@ -90,15 +90,15 @@ Brix 核心组件的命名空间为 mosaics，所有代码都在 <https://github
 
 - mosaics
   - dropdown
-    - README.md
-    - index.js
-    - index.css
-    - ...
+      - README.md
+      - index.js
+      - index.css
+      - ...
   - breadcrumbs
-    - README.md
-    - index.js
-    - index.css
-    - ...
+      - README.md
+      - index.js
+      - index.css
+      - ...
 
 然后，在 mosaics 目录下执行：
 
@@ -122,9 +122,9 @@ mo lego
 
 - public
   - mux.lego
-    - ceiling
-      - template.vm
-      - index.js
+     - ceiling
+         - template.vm
+         - index.js
 - views
   - index.vm
 - server.js
