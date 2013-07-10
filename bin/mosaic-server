@@ -84,7 +84,8 @@ app.get('/:name', function(req, res) {
       fullname: 'mosaics/' + name,
       readme: marked(readme),
       demo: marked(result.join('\n')),
-      demojs: fs.existsSync(path.join(dpath, 'demo.js'))
+      demojs: fs.existsSync(path.join(dpath, 'demo.js')),
+      democss: fs.existsSync(path.join(dpath, 'demo.css'))
     })
   }
 })
