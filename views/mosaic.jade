@@ -24,6 +24,10 @@ html(lang="en")
           base: '/'
         }
       })
-      KISSY.use('brix/app', function(S, app) {
-        app.boot()
-      })
+    if demojs
+      script(src="/#{name}/demo.js")
+    else
+      script.
+        KISSY.use('brix/app', function(S, app) {
+          app.boot()
+        })

@@ -1,5 +1,24 @@
 #!/usr/bin/env node
 
+/*
+ * Start the mosaic server.
+ * The folder structure shall be:
+ *
+ * - mosaics
+ *   - wangwang
+ *   - dropdown
+ *   - breadcrumb
+ *
+ * wangwang, dropdown, and breadcrumb shall be in version controlled in their
+ * own repositories, such as:
+ *
+ * - github.com/mosaics/wangwang
+ * - github.com/mosaics/dropdown
+ * - github.com/mosaics/breadcrumb
+ *
+ * To put a mosaic onto CDN, use `mo publish` command.
+ */
+
 "use strict";
 
 var express = require('express')
@@ -61,9 +80,11 @@ app.get('/:name', function(req, res) {
     }
 
     res.render('mosaic', {
+      name: name,
       fullname: 'mosaics/' + name,
       readme: marked(readme),
-      demo: marked(result.join('\n'))
+      demo: marked(result.join('\n')),
+      demojs: fs.existsSync(path.join(dpath, 'demo.js'))
     })
   }
 })

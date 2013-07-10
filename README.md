@@ -1,11 +1,135 @@
-# Mosaic Client
+# Mosaic
 
-马赛克（Mosaic）管理工具，与 Mosaic Server 配合，将业务中的各个区块以组件形式管理起来。
+马赛克（Mosaic）是所有以 Brix 组件形式编写的组件的管理工具，将业务中的各个区块以组件形式管理起来。
+马赛克希望可以成为 BPM 工具的替代，后者依赖 NPM，不易扩展。
 
-马赛克客户端与服务端一样，都是简单示例，目的是简化目前的 BPM 结构，使其更容易支持淘系自身的业务场景。
-BPM 目前依赖 NPM，不易扩展，为后序版本演进方便，因此做了这个示例，看看可以简化成什么样子。
+在你使用本工具之前，请先阅读 [Brix 相关文档](http://thx.github.io/brix)。
 
-## 依赖
+## 安装
+
+马赛克采用 Node.js 开发，通过 NPM 方式发布。所以使用马赛克，你需要安装：
+
+- Node.js
+- NPM
+
+然后在终端执行：
+
+```
+npm install mosaic -g
+```
+
+装好之后，就可以使用 mosaic 命令了，还可以使用 mo 简写喔
+
+```
+mosaic help
+mo help
+```
+
+## 用法
+
+马赛克工具包含如下功能：
+
+- 发布组件
+- 下载组件
+- 开发核心组件
+- 开发乐高项目
+
+所有功能都以子命令的形式提供，类似 git、brew 等工具：
+
+- mo publish
+- mo install
+- mo server
+- mo lego
+
+### 发布组件
+
+在组件目录执行：
+
+```
+mo publish
+```
+
+即可。如果不想 cd 来 cd 去，也可以指定一下组件相对当前目录的路径：
+
+```
+mo publish mux.tanx/dropdown
+```
+
+发布后，将可在 <http://brix.alibaba-inc.com> 看到所有发布的组件，自然也包括你刚发布的这个。
+同时也可以在那找到你的组件在 CDN 的地址，通常为：
+
+<http://g.tbcdn.cn/mo/bricks/:namespace/:name/:version/:file>
+
+如果是 Brix 核心组件，则命名空间为 mosaics ，路径为：
+
+<http://g.tbcdn.cn/mo/mosaics/:name/:version/:file>
+
+如何在自己项目中使用这些外部组件（核心组件、或者其他业务组件），请看 <http://thx.github.io/brix>。
+
+### 下载组件
+
+可以下载仓库中的组件到本地，通常这是不必要的，除非你需要将某些组件改头换面到自己业务的命名空间下。
+
+```
+mo install mosaics/wangwang/0.1.0
+mo install mosaics/wangwang
+```
+
+均可。不指定版本的话，则默认下载最新的。将会下载组件包，并解压至当前目录，结构为：
+
+- mosaics
+  - wangwang
+    - 0.1.0
+      - index.js
+      - ...
+
+### 开发 Brix 核心组件
+
+Brix 核心组件的命名空间为 mosaics，所有代码都在 <https://github.com/mosaics>，相应的，
+我们要求核心组件开发者在本机也将组件目录组织为：
+
+- mosaics
+  - dropdown
+    - README.md
+    - index.js
+    - index.css
+    - ...
+  - breadcrumbs
+    - README.md
+    - index.js
+    - index.css
+    - ...
+
+然后，在 mosaics 目录下执行：
+
+```
+mo server
+```
+
+接着，访问 <http://127.0.0.1:5000/dropdown> 即可预览自己所要开发的组件了。预览的内容根据
+README.md 的内容自动产生，具体写法可以参考
+[mosaics/wangwang](https://github.com/mosaics/wangwang) 示例。
+
+### 开发基于乐高平台的页面
+
+使用如下命令启动服务：
+
+```
+mo lego
+```
+
+要求目录组织如下：
+
+- public
+  - mux.lego
+    - ceiling
+      - template.vm
+      - index.js
+- views
+  - index.vm
+- server.js
+
+## 实现
 
 [isaacs](http://github.com/isaacs) 大牛对 Node 社区影响深远，要做包管理工具，
 完全跟他做的 NPM 不沾边是不实际的。在本项目中，依赖的与 NPM 相关的包有：
