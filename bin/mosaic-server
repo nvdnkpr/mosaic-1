@@ -54,6 +54,10 @@ app.get('/:style.css', function(req, res) {
   res.sendfile(path.resolve(__dirname, '../public/stylesheets/' + req.params.style + '.css'))
 })
 
+app.get('/:js.js', function(req, res) {
+  res.sendfile(path.resolve(__dirname, '../public/javascripts/' + req.params.js + '.js'))
+})
+
 app.get('/:name', function(req, res) {
   var name = req.params.name
   var dpath = path.join(process.cwd(), name)
@@ -69,13 +73,25 @@ app.get('/:name', function(req, res) {
     var result = []
     var startPtn = /^## ?(?:Usage|Demo|用法)/
     var closePtn = /^##[^#]/
+    var jsCodePtn = /^```\s*(?:javascript|js)/
     var codePtn = /^```/
+    var currentSyntax
 
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i]
 
       if (open && closePtn.test(line)) break
       if (open && !codePtn.test(line)) result.push(line)
+      if (open && codePtn.test(line)) {
+        if (currentSyntax === 'js') {
+          result.push('</script>')
+          currentSyntax = null
+        }
+        else if (jsCodePtn.test(line)) {
+          currentSyntax = 'js'
+          result.push('<script>')
+        }
+      }
       if (!open && startPtn.test(line)) open = true
     }
 

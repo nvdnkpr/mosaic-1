@@ -68,22 +68,7 @@ function afterTar(err) {
 
     var statusCode = res.statusCode
 
-    if (statusCode === 205) {
-      mosaic.question('Files already exist on server,overwrite?(y\/n): ', function(answer) {
-        answer = answer.toLowerCase().trim()
-
-        if (answer === 'y') {
-          post('y')
-        }
-        else if (answer === 'n') {
-          process.exit(0)
-        }
-        else {
-          this.redo()
-        }
-      })
-    }
-    else {
+    if (statusCode === 201) {
       var data = JSON.parse(body)
 
       debug(statusCode + ': ' + data.success || data.error)
