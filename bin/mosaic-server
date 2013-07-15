@@ -26,6 +26,7 @@ var fs = require('fs')
 var path = require('path')
 var mosaic = require('../lib/mosaic')
 var marked = require('marked')
+var mreadme = require('mosaic-readme')
 
 
 var app = express()
@@ -68,38 +69,13 @@ app.get('/:name', function(req, res) {
   }
   else {
     var readme = fs.readFileSync(fpath, 'utf-8')
-    var lines = readme.split(/\r?\n/)
-    var open = false
-    var result = []
-    var startPtn = /^## ?(?:Usage|Demo|用法)/
-    var closePtn = /^##[^#]/
-    var jsCodePtn = /^```\s*(?:javascript|js)/
-    var codePtn = /^```/
-    var currentSyntax
-
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i]
-
-      if (open && closePtn.test(line)) break
-      if (open && !codePtn.test(line)) result.push(line)
-      if (open && codePtn.test(line)) {
-        if (currentSyntax === 'js') {
-          result.push('</script>')
-          currentSyntax = null
-        }
-        else if (jsCodePtn.test(line)) {
-          currentSyntax = 'js'
-          result.push('<script>')
-        }
-      }
-      if (!open && startPtn.test(line)) open = true
-    }
+    var demo = mreadme.demo(readme)
 
     res.render('mosaic', {
       name: name,
       fullname: 'mosaics/' + name,
       readme: marked(readme),
-      demo: marked(result.join('\n')),
+      demo: marked(demo),
       css: fs.existsSync(path.join(dpath, 'index.css'))
     })
   }

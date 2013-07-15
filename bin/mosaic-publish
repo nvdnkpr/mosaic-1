@@ -14,33 +14,31 @@ var request = require('request')
 var debug = require('debug')('mosaic:publish')
 var mosaic = require('../lib/mosaic')
 
-var MOPATH_PATTERN = /([^\/]+)\/([^\/]+)\/((?:\d+\.){2}\d+(?:-[^\/]+)?)$/
-
 
 program.parse(process.argv)
 
 var args = program.args
 var cwd = process.cwd()
-var fpath = cwd
+var dpath = cwd
 
-if (args[0]) fpath = path.normalize(cwd, args[0])
+if (args[0]) dpath = path.join(cwd, args[0])
 
-var mopath = path.join(fpath, 'mosaic.json')
+var fpath = path.join(dpath, 'package.json')
 
-if (!fs.existsSync(mopath)) debug('没找到 mosaic.json')
+if (!fs.existsSync(fpath)) mosaic.error('没找到 package.json')
 
-var mo = require(mopath)
-
-if (isValid(mo)) {
-  publish(fpath)
-}
+var mo = require(fpath)
 
 
-function publish(fpath){
-  new Packer({ path: fpath, type: 'Directory', isDirectory: true })
+console.log(mo)
+if (isValid(mo)) publish(dpath)
+
+
+function publish(dpath){
+  new Packer({ path: dpath, type: 'Directory', isDirectory: true })
     .pipe(tar.Pack())
     .pipe(zlib.Gzip())
-    .pipe(fstream.Writer('mosaic.tgz'))
+    .pipe(fstream.Writer('package.tgz'))
     .on('close', afterTar)
 }
 
@@ -48,47 +46,45 @@ function afterTar(err) {
   var parts = mo.name.split(/\//)
   var ns = parts[0]
   var name = parts[1]
-  var url = [mosaic.get('daemon'), 'api', ns , name, mo.version ].join('\/')
+  var url = mosaic.remote([ns , name, mo.version ].join('\/'))
 
-  post()
+  var r = request.post(url, callback)
+  var form = r.form()
 
-  function post(overwrite){
-    var r = request.post(url, callback)
-    var form = r.form()
-
-    if (overwrite) form.append('overwrite', 'y')
-
-    form.append('tarball', fs.createReadStream('mosaic.tgz'))
-  }
+  form.append('tarball', fs.createReadStream('package.tgz'))
 
   function callback(err, res, body) {
-    if (err) {
-      return debug(err)
+    if (err) return mosaic.fatal(err)
+
+    switch (res.statusCode) {
+      case 201:
+        mosaic.log('success', body)
+        break
+      case 409:
+        mosaic.error(body)
+        break
+      default:
+        mosaic.error('failed', body)
     }
 
-    var statusCode = res.statusCode
-
-    if (statusCode === 201) {
-      var data = JSON.parse(body)
-
-      debug(statusCode + ': ' + data.success || data.error)
-    }
+    fs.unlinkSync('package.tgz')
   }
 }
 
 function isValid(mo){
   var name = mo.name
-  var version = .version
+  var version = mo.version
   var valid = true
 
   function fail(msg) {
     valid = false
-    debug(msg)
+    mosaic.error(msg)
   }
 
   if (!name) fail('未填写名称')
   if (!version) fail('未填写版本')
 
+  if (!/^mosaics\/\w+$/.test(name) && !/^\w+(?:\.\w+)+\/\w+$/.test(name)) fail('名称不符合 命名空间/组件名 规范')
   if (!semver.valid(version)) fail('版本 ' + version + ' 不合规范')
 
   return valid

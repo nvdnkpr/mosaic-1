@@ -7,6 +7,20 @@ var path = require('path')
 var program = require('commander')
 var spawn = require('win-fork')
 
+var pkg = require(path.resolve(__dirname, '../package.json'))
+
+
+program
+  .version(pkg.version)
+
+program.on('--help', function() {
+  console.log('  Examples:')
+  console.log('')
+  console.log('    $ mo server       # start mosaics server')
+  console.log('    $ mo publish      # publish your mosaic')
+  console.log('    $ mo install      # download mosaic or any brick source')
+  console.log('')
+})
 
 program.parse(process.argv)
 
